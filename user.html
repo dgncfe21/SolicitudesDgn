@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title> WebDev </title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+</head>
+
+<!-- Links to other pages -->
+
+<body>
+  <nav>
+    <div class="logo"> USER PROFILE PAGE </div>
+    <ul class="nav-links">
+      <li><a href="./index.html">Home</a></li>
+ 
+      <li><a id="userlink" href="">User</a></li>
+      <li><a id ="signout" href="javascript:signUserout()">Signout</a></li>
+    </ul>
+    <div class="icon">
+      <div class="line1"></div>
+      <div class="line2"></div>
+      <div class="line3"></div>
+    </div>
+  </nav>
+  
+
+  <div height="100%">
+    <canvas id="canvas1"></canvas>
+  </div>
+ 
+
+  <script>
+    let userlink = document.getElementById('userlink');
+let signout = document.getElementById('signout');
+let header = document.getElementById('hh');
+var currentuser = null;
+
+function getUser() {
+  let keepLoggedIn = localStorage.getItem("keepLoggedIn");
+  if (keepLoggedIn == "yes") {
+    currentuser = JSON.parse(localStorage.getItem('user'));
+  } else {
+    currentuser = JSON.parse(sessionStorage.getItem('user'));
+  }
+}
+
+function signUserout() {
+  sessionStorage.removeItem('user');
+  localStorage.removeItem('user');
+  localStorage.removeItem('keepLoggedIn');
+  window.location = "index.html";
+}
+
+window.onload = function() {
+  getUser();
+  if (currentuser == null) {
+    userlink.innerText= "";
+    userlink.classList.replace("nav-link","btn");
+    userlink.classList.add("btn-primary");
+    userlink.href = "signup.html";
+    signout.innerText = "Login";
+    signout.classList.replace("nav-link","btn");
+    signout.classList.add("btn-success");
+    signout.href = "signup.html";
+
+  } else {
+    userlink.innerText = currentuser.username;
+    userlink.classList.replace("btn","nav-link");
+    userlink.classList.remove("btn-primary");
+    userlink.href = "#";
+    header.innerText = currentuser.firstName + " " + currentuser.lastName;
+    signout.innerText = "Sign Out";
+    signout.classList.replace("btn", "nav-link");
+    signout.classList.remove("btn-success");
+    signout.href = "javascript:signUserout()";
+  }
+}
+  </script>
+</body>
+
+</html>

@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html>
+  <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up</title>
+    <link rel="stylesheet" href="stylev1.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+        integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            width: 100vw;
+            margin: 0px;
+            background: #5CA4EA;
+           overflow: hidden;
+           background-image: linear-gradient(#0a995ee6, #4ca781e6),
+            url("medsbg1.jpg");
+            background-color: #53f37b;
+          background-size: cover;
+           background-position: center;
+        }
+    </style>
+
+</head>
+
+<!-- Links to other pages -->
+
+<body>
+
+  <nav hidden>
+    
+    <h1 id="hh" hidden></h1>
+    <ul class="nav-links" hidden>
+      <li><a href="index.html">Home</a></li>
+
+      <li><a id="userlink" href="" style="font-family: 'Montserrat', sans-serif;">User</a></li>
+      <li><a id ="signout" href="">Signout</a></li>
+    </ul>
+    
+  </nav>
+  
+        <div class="mb-3 ">
+            <div class="form-box" >
+                <div class="form-control mb-3" >
+                  
+                </div>
+              
+                <h1 id="hh"><b>Login</b></h1>
+                <h4 id="hh"><b>Medidores Oriente</b></h4>
+      
+                <div id="login" class="mb-3">
+                   <input type="text" id="em2" class="form-control mb-3" placeholder="username" required>
+                   <input type="password" id="pass2" class="form-control mb-3" placeholder="password" required>
+                   <input type="checkbox" id="kli" class="check-box"><span>Continuar conectado</span>
+                   <button type="text" class="submit-btn btnSG mb-3 w-100" id="submit2">Login</button>
+                </div>
+                <h1 id="hh" > &nbsp; </h1>
+                <div id="signup" class="input-group form-control mb-3 light" >
+                    <input type="text" id="fn1" class="input-field form-control mb-3" placeholder="first name" required >
+                    <input type="text" id="ln1" class="input-field form-control mb-3" placeholder="last name" required >
+                    <input type="text" id="un1" class="input-field form-control mb-3" placeholder="username" required >
+                    <input type="text" id="em1" class="input-field form-control mb-3" placeholder="email" required >
+                    <input type="password" id="pass1" class="input-field form-control mb-3" placeholder="password" required >
+                    <input type="checkbox" id="myCheck" class="check-box"  required >
+                    <button type="text" id="submit1" class="submit-btn" >Signup</button>
+                </div>
+            </div>
+        </div>
+        
+
+        <div class="gBox">
+            <canvas id="canvas1"></canvas>
+        </div>
+        <!-- <script src="../Basic_Login(FIREBASE)/js/firebase.js"></script>  -->
+        <!-- <script src="js/particles.js"></script> -->
+        <script src="../Basic_Login(FIREBASE)/js/user.js"></script>
+        <!-- <script src="js/app.js"></script> -->
+
+        <script type="module">
+          import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.8/firebase-app.js";
+
+
+
+ 
+const firebaseConfig = {
+    apiKey: "AIzaSyBc6Lj0zAFxKisC-8NzDgid1OHmkTG8vdE",
+  authDomain: "orientetotal-d7de4.firebaseapp.com",
+  databaseURL: "https://orientetotal-d7de4-default-rtdb.firebaseio.com",
+  projectId: "orientetotal-d7de4",
+  storageBucket: "orientetotal-d7de4.appspot.com",
+  messagingSenderId: "478374303861",
+  appId: "1:478374303861:web:884704e884c5031d0fc03c",
+  measurementId: "G-SZLNLRFQVT"
+};
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+
+import { getDatabase, ref, set, child, get}
+    from "https://www.gstatic.com/firebasejs/9.6.8/firebase-database.js"
+const db = getDatabase();
+//const analytics = getAnalytics(app);
+
+// references
+
+
+
+const em_signup = document.getElementById('em1');
+const pass_signup = document.getElementById('pass1');
+const fn = document.getElementById('fn1');
+const ln = document.getElementById('ln1');
+const un = document.getElementById('un1');
+
+const un_login = document.getElementById("em2");
+const pass_login = document.getElementById("pass2");
+
+// validation
+
+function valid() {
+   let emailregex = /^[a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
+
+   if (!emailregex.test(em_signup.value)) {
+       alert("Invalid Email");
+       return false;
+
+   }
+   if(pass_signup.value.length < 6) {
+       alert("password must be at least 6 characters long.");
+       return false;
+   }
+   return true;
+}
+
+
+// Signup User
+
+function signupUser() {
+   if(!valid()){
+       return;
+   };
+
+   var terms = document.getElementById("myCheck").checked;
+   if (!terms) {
+       alert("Please agree to terms.");
+       return;
+   }
+
+   const dbref = ref(db);
+
+   get(child(dbref, "UsuariosOriente/"+ un.value)).then((snapshot)=>{
+       if(snapshot.exists()){
+           alert("User already exists.");
+       }
+       else {
+           set(ref(db, "UsuariosOriente/"+ un.value), {
+               username: un.value,
+               firstName: fn.value,
+               lastName: ln.value,
+               email: em_signup.value,
+               password: encPass()
+           })
+           .then(()=>{
+               alert("User added.");
+               newUser();
+           })
+           .catch((error)=>{
+               alert("error" + error);
+           })
+       }
+   });
+}
+
+function newUser() {
+   const dbref = ref(db);
+   get(child(dbref, "UsuariosOriente/"+ un.value)).then((snapshot)=>{
+       signinUser(snapshot.val());
+   });
+}
+
+//Login User
+
+function AuthenticateUser() {
+   const dbref = ref(db);
+   get(child(dbref, "UsuariosOriente/"+ un_login.value)).then((snapshot)=>{
+       if(snapshot.exists()){
+           let dbpass = decPass(snapshot.val().password);
+           if (dbpass == pass_login.value) {
+               signinUser(snapshot.val());
+           } else {
+               alert("Invalid User/Password.");
+           }
+       }
+       else {
+           alert("Invalid User/Password.");
+       }
+   });
+}
+
+//assign events
+
+document.getElementById("submit1").addEventListener('click', signupUser);
+document.getElementById("submit2").addEventListener('click', AuthenticateUser);
+
+
+//encrypt 
+
+function encPass() {
+   var pass12 = CryptoJS.AES.encrypt(pass_signup.value, pass_signup.value);
+   return pass12.toString();
+}
+
+//decrypt 
+
+function decPass(dbpass) {
+   var pass12 = CryptoJS.AES.decrypt(dbpass, pass_login.value);
+   return pass12.toString(CryptoJS.enc.Utf8);
+}
+
+// login 
+
+function signinUser(user) {
+   let keepLoggedIn = document.getElementById('kli').checked;
+   if (!keepLoggedIn) {
+       sessionStorage.setItem('user', JSON.stringify(user));
+       window.location="index.html";
+   } else {
+       localStorage.setItem('keepLoggedIn', 'yes');
+       localStorage.setItem('user', JSON.stringify(user));
+       window.location="index.html";
+   }
+}
+        </script>
+       
+    </body>
+</html>
